@@ -1,8 +1,8 @@
-FROM node:6
+FROM node:12
 RUN mkdir -p /srv/www/koop
 ADD package.json /srv/www/koop
 WORKDIR /srv/www/koop
 RUN npm install
 ADD . /srv/www/koop
-EXPOSE 8080
+EXPOSE 9000
 ENTRYPOINT ["/usr/local/bin/node", "/srv/www/koop/server.js"]
