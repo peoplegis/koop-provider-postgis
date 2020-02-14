@@ -31,14 +31,16 @@ function Model(koop) { }
 function formatSQL(req) {
 	const geomCol = req.query.geom;
 	const srcSrid = req.query.srcsrid;
+	const cols = req.query.columns.split(",").filter((v) => v !== 'id').join(",");
 	const sql = squel.select()
-		.field(req.query.columns)
+		.field(`id as "OBJECTID"`)
 		// .field(`ST_Simplify(ST_Transform(${'geom'}, 4326), 0.000001) as geom`)
 		.field(`st_transform(st_setsrid("${geomCol}", ${srcSrid}), 4326) as geom`)
 		.from(req.query.table)
 		// .where(req.query.filter)
 		// .limit(req.query.limit)
 		;
+	cols && sql.field(cols);
 	console.log('sql', sql.toString());
 
 	// if (req.query.join) {
@@ -74,7 +76,7 @@ Model.prototype.getData = function (req, callback) {
 				function (error, result) {
 					console.log(error, result);
 					result.metadata = {
-						"idField" : "id"
+						"idField" : "OBJECTID"
 					};
 					callback(error, result);
 				}
